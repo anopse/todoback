@@ -1,0 +1,34 @@
+services:
+    mongo:
+      image: mongo:7
+      container_name: todo-mongo
+      restart: unless-stopped
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: password
+        MONGO_INITDB_DATABASE: todos
+    mongo-express:
+      image: mongo-express:1
+      container_name: todo-mongo-express
+      restart: unless-stopped
+      ports:
+        - 8081:8081
+      environment:
+        ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+        ME_CONFIG_MONGODB_ADMINPASSWORD: password
+        ME_CONFIG_BASICAUTH_USERNAME: admin
+        ME_CONFIG_BASICAUTH_PASSWORD: password
+        ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongo:27017/
+    todoback:
+      image: dcolle/todoback-server:0.1.0-SNAPSHOT
+      container_name: todo-back
+      restart: unless-stopped
+      ports:
+        - 8080:8080
+      environment:
+        MONGODB_HOST: mongo
+        MONGODB_PORT: 27017
+        MONGODB_USERNAME: admin
+        MONGODB_PASSWORD: password
+        MONGODB_AUTH_DATABASE: admin
+        MONGODB_DATABASE: todos
